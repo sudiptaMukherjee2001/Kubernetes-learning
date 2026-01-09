@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myconfigmap
+data:
+  username: k8s-admin
+  access_level: "1"
+  college_name: Jain deemd to university college
+  portfolio_url: sudiptoworks.in
+
+  #File like keys 
+  sudipta.skills: |
+    linux
+    kuberneets
+    git
+    docker
+    frontend
+    terraform

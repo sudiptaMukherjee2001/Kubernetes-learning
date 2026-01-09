@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod-file
+spec:
+  containers:
+  - name: mypod-container
+    image: redis
+    volumeMounts:
+    - name: sudipta-skills
+      mountPath: "/etc/sudipta/skills"
+      readOnly: true
+  volumes:
+  - name: sudipta-skills
+    configMap:
+      name: myconfigmap

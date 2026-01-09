@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: env-configmap-way-two
+spec:
+  containers:
+    - name: app
+      image: busybox:latest
+      command: ["/bin/sh", "-c", "sleep 3600"]
+      env:
+        - name: APP_USERNAME        # env var name inside container
+          valueFrom:
+            configMapKeyRef:
+              name: myconfigmap     # ConfigMap name
+              key: username         # key from ConfigMap
+
+        - name: USER_ACCESS_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: myconfigmap
+              key: access_level
+
+        - name: COLLEGE_NAME
+          valueFrom:
+            configMapKeyRef:
+              name: myconfigmap
+              key: college_name

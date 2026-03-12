@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dd-internship-pod
+spec:
+  containers:
+  - name: dd-internship-backend-con
+    image: sudipta4docker/dd_internship:backend
+    ports:
+    - containerPort: 8081

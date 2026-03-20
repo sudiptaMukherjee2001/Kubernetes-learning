@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-k8-learing-journey-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: "k8s-learning.sudiptaworks.in"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: my-k8s-learing-journey
+            port:
+              number: 80
+

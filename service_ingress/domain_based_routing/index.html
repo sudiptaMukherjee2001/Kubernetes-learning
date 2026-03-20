@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kubernetes Journey | Sudipto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #0f172a, #020617);
+      color: #e2e8f0;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 30px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #38bdf8;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      opacity: 0.7;
+    }
+
+    section {
+      margin-bottom: 30px;
+    }
+
+    h2 {
+      margin-bottom: 10px;
+      color: #22c55e;
+    }
+
+    .progress-bar {
+      background: #1e293b;
+      border-radius: 10px;
+      overflow: hidden;
+      height: 20px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #38bdf8, #22c55e);
+      transition: width 1.5s ease-in-out;
+    }
+
+    .progress-text {
+      text-align: right;
+      margin-top: 5px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      padding: 12px;
+      margin: 6px 0;
+      border-radius: 8px;
+      background: #1e293b;
+      transition: transform 0.2s;
+    }
+
+    li:hover {
+      transform: translateX(5px);
+    }
+
+    .done {
+      border-left: 5px solid #22c55e;
+    }
+
+    .todo {
+      border-left: 5px solid #38bdf8;
+    }
+
+    .status {
+      background: #1e293b;
+      padding: 15px;
+      border-radius: 10px;
+      line-height: 1.6;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 40px;
+      opacity: 0.6;
+    }
+
+    .badge {
+      display: inline-block;
+      background: #38bdf8;
+      color: #020617;
+      padding: 5px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      margin-left: 8px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <header>
+      <h1>🚀 Kubernetes Learning Journey</h1>
+      <p>Building DevOps skills step-by-step</p>
+    </header>
+   
+    <section>
+      <h2>📊 Progress</h2>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-text" id="progressText">0%</div>
+    </section>
+
+    <section class="status">
+      <h2>🔥 Current Focus</h2>
+      <p>
+        Over the past few days, I’ve been focused on learning Kubernetes hands-on.  
+        Successfully implemented Ingress with real domain-based routing.  
+        Now moving towards CI/CD integration.
+      </p>
+    </section>
+
+    <section>
+      <h2>📚 Completed Topics</h2>
+      <ul>
+        <li class="done">Pods & Deployments <span class="badge">Completed</span></li>
+        <li class="done">ClusterIP & NodePort <span class="badge">Completed</span></li>
+        <li class="done">LoadBalancer (Concept + Minikube) <span class="badge">Completed</span></li>
+        <li class="done">Ingress (Path Routing) <span class="badge">Completed</span></li>
+        <li class="done">Ingress Rewrite Rules <span class="badge">Completed</span></li>
+        <li class="done">Host-Based Routing <span class="badge">Completed</span></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>🎯 Next Goal</h2>
+      <ul>
+        <li class="todo">CI/CD with Kubernetes <span class="badge">On Roadmap</span></li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>Built by Sudipto | DevOps Journey 🚀</p>
+    </footer>
+
+  </div>
+
+  <script>
+    const progress = 80;
+
+    const fill = document.getElementById("progressFill");
+    const text = document.getElementById("progressText");
+
+    setTimeout(() => {
+      fill.style.width = progress + "%";
+      text.innerText = progress + "% Complete";
+    }, 300);
+  </script>
+
+</body>
+</html>

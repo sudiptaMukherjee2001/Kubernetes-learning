@@ -52,18 +52,14 @@ pipeline{
    
        stage("Update YAML & Deploy"){
             steps{
-                // dir("service_ingress/domain_based_routing"){
-                //     sh """
-                //     sed -i 's|image:.*|image: sudipta4docker/domain-based-routing:${BUILD_NUMBER}|' Deployment.yaml 
-                //     kubectl apply -f Deployment.yaml
-                //     """
-                // }
+                
                 withCredentials([file(credentialsId: '8c0dd018-899d-4ddc-b19c-050285320f87', variable: 'kube_config')]) {
-                    sh """
-                    export KUBECONFIG=$kube_config
-                    sed -i 's|image:.*|image: sudipta4docker/domain-based-routing:${BUILD_NUMBER}|' service_ingress/domain_based_routing/Deployment.yaml 
-                    kubectl apply -f service_ingress/domain_based_routing/Deployment.yaml
-                    """
+                    dir("service_ingress/domain_based_routing"){
+                        sh """
+                        sed -i 's|image:.*|image: sudipta4docker/domain-based-routing:${BUILD_NUMBER}|' Deployment.yaml 
+                        kubectl apply -f Deployment.yaml
+                        """
+                    }
                 }
             }
         }

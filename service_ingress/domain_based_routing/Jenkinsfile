@@ -56,6 +56,8 @@ pipeline{
                 withCredentials([file(credentialsId: '8c0dd018-899d-4ddc-b19c-050285320f87', variable: 'kube_config')]) {
                     dir("service_ingress/domain_based_routing"){
                         sh """
+
+                        export KUBECONFIG=$kube_config
                         sed -i 's|image:.*|image: sudipta4docker/domain-based-routing:${BUILD_NUMBER}|' Deployment.yaml 
                         kubectl apply -f Deployment.yaml
                         """

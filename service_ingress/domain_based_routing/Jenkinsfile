@@ -1,6 +1,8 @@
 pipeline{
-     agent any 
+    agent any 
+
     stages{
+
         stage("Debug Workspace"){
             steps{
                 sh "pwd"
@@ -8,92 +10,79 @@ pipeline{
                 sh "ls -la service_ingress/domain_based_routing"
             }
         }
-         stage("Build  images"){
+
+        stage("Build Image"){
             steps{
-               dir("service_ingress/domain_based_routing"){
+                dir("service_ingress/domain_based_routing"){
                     sh "docker build -t sudipta4docker/domain-based-routing:${BUILD_NUMBER} ."
                 }
             }
-            post{
-                success{
-                    echo "========Image build successfully========"
-                    sh "docker images | grep sudipta4docker/domain-based-routing"
-
-                }
-                failure{
-                    echo "========Build the images execution failed========"
-                }
-            }
         }
-        stage("Login to docker hub"){
+
+        stage("Docker Login"){
             steps{
-                withCredentials([usernamePassword(credentialsId: '22b95ae6-c01c-4793-b12b-81ecfc1518ad', passwordVariable: 'DOCKER_ACCESS_TOKEN', usernameVariable: 'DOCKER_USERNAME')]) {
+                withCredentials([usernamePassword(
+                    credentialsId: '22b95ae6-c01c-4793-b12b-81ecfc1518ad',
+                    passwordVariable: 'DOCKER_ACCESS_TOKEN',
+                    usernameVariable: 'DOCKER_USERNAME'
+                )]) {
                     sh "echo $DOCKER_ACCESS_TOKEN | docker login -u $DOCKER_USERNAME --password-stdin"
                 }
             }
-                post{
-                    success{
-                        echo "========Login to docker hub successfully========"
-                    }
-                    failure{
-                        echo "========Login to docker hub execution failed========"
-                    }
-                }
         }
-          stage("push the images to docker hub"){
-            steps{
-                
 
-                    echo "========Pushing the images to docker hub========"
-                    sh "docker push sudipta4docker/domain-based-routing:${BUILD_NUMBER}"               
-                
+        stage("Push Image"){
+            steps{
+                sh "docker push sudipta4docker/domain-based-routing:${BUILD_NUMBER}"
             }
         }
-        stage("auth to GitHub"){
+
+        stage("Deploy to Kubernetes"){
             steps{
-                dir("/var/lib/jenkins/workspace/k8-learing-jouney"){
+                withCredentials([file(
+                    credentialsId: '8c0dd018-899d-4ddc-b19c-050285320f87',
+                    variable: 'kube_config'
+                )]) {
+                    dir("service_ingress/domain_based_routing"){
+                        sh """
+                        export KUBECONFIG=$kube_config
+
+                        # update YAML for deployment
+                        sed -i 's|image:.*|image: sudipta4docker/domain-based-routing:${BUILD_NUMBER}|' Deployment.yaml
+
+                        kubectl apply -f Deployment.yaml
+                        kubectl rollout status deployment/k8-learing-journey-app-deployment
+                        """
+                    }
+                }
+            }
+        }
+
+        stage("Update GitHub"){
+            steps{
+                dir("${WORKSPACE}"){
                     sshagent(['git-ssh']) {
                         sh """
                         mkdir -p ~/.ssh
                         ssh-keyscan github.com >> ~/.ssh/known_hosts
+
+                        # IMPORTANT: checkout first
                         git checkout main
+                        git pull origin main
+
                         git config user.name "jenkins"
                         git config user.email "jenkins@local"
-                        """
-                    }
-                }
-            }
-        }
-       stage("Update YAML & Deploy"){
-            steps{
-                
-                withCredentials([file(credentialsId: '8c0dd018-899d-4ddc-b19c-050285320f87', variable: 'kube_config')]) {
-                    dir("service_ingress/domain_based_routing"){
-                        sh """
 
-                        export KUBECONFIG=$kube_config
-                        sed -i 's|image:.*|image: sudipta4docker/domain-based-routing:${BUILD_NUMBER}|' Deployment.yaml 
-                        kubectl apply -f Deployment.yaml
-                        kubectl get pods
+                        # update YAML for git (same change)
+                        sed -i 's|image:.*|image: sudipta4docker/domain-based-routing:${BUILD_NUMBER}|' service_ingress/domain_based_routing/Deployment.yaml
+
+                        git add service_ingress/domain_based_routing/Deployment.yaml
+                        git diff --quiet || git commit -m "update image to ${BUILD_NUMBER}"
+                        git push origin main
                         """
                     }
                 }
             }
         }
-        stage("Push to GitHub"){
-        steps{
-            dir("/var/lib/jenkins/workspace/k8-learing-jouney"){
-                sshagent(['git-ssh']) {
-                    sh """
-                    git add service_ingress/domain_based_routing/Deployment.yaml
-                    git commit -m "update image to ${BUILD_NUMBER}" || true
-                    git push origin main
-                    """
-                }
-            }
-        }
     }
-        
-    }
-   
 }

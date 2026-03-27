@@ -37,49 +37,40 @@ pipeline{
             }
         }
 
-        stage("Deploy to Kubernetes"){
-            steps{
-                withCredentials([file(
-                    credentialsId: '8c0dd018-899d-4ddc-b19c-050285320f87',
-                    variable: 'kube_config'
-                )]) {
-                    dir("service_ingress/domain_based_routing"){
-                        sh """
-                        export KUBECONFIG=$kube_config
-
-                        # update YAML for deployment
-                        sed -i 's|image:.*|image: sudipta4docker/domain-based-routing:${BUILD_NUMBER}|' Deployment.yaml
-
-                        kubectl apply -f Deployment.yaml
-                        kubectl rollout status deployment/k8-learing-journey-app-deployment
-                        """
-                    }
-                }
-            }
-        }
-
-        stage("Update GitHub"){
+        stage("Update GitHub & Deploy"){
             steps{
                 dir("${WORKSPACE}"){
                     sshagent(['git-ssh']) {
-                        sh """
-                        mkdir -p ~/.ssh
-                        ssh-keyscan github.com >> ~/.ssh/known_hosts
+                        withCredentials([file(
+                            credentialsId: '8c0dd018-899d-4ddc-b19c-050285320f87',
+                            variable: 'kube_config'
+                        )]) {
+                            sh """
+                            mkdir -p ~/.ssh
+                            ssh-keyscan github.com >> ~/.ssh/known_hosts
 
-                        # IMPORTANT: checkout first
-                        git checkout main
-                        git pull origin main
+                            export KUBECONFIG=$kube_config
 
-                        git config user.name "jenkins"
-                        git config user.email "jenkins@local"
+                            # STEP 1: checkout FIRST (fix error)
+                            git checkout main
+                            git pull origin main
 
-                        # update YAML for git (same change)
-                        sed -i 's|image:.*|image: sudipta4docker/domain-based-routing:${BUILD_NUMBER}|' service_ingress/domain_based_routing/Deployment.yaml
+                            git config user.name "jenkins"
+                            git config user.email "jenkins@local"
 
-                        git add service_ingress/domain_based_routing/Deployment.yaml
-                        git diff --quiet || git commit -m "update image to ${BUILD_NUMBER}"
-                        git push origin main
-                        """
+                            # STEP 2: NOW modify YAML
+                            sed -i 's|image:.*|image: sudipta4docker/domain-based-routing:${BUILD_NUMBER}|' service_ingress/domain_based_routing/Deployment.yaml
+
+                            # STEP 3: apply to k8s
+                            kubectl apply -f service_ingress/domain_based_routing/Deployment.yaml
+                            kubectl rollout status deployment/k8-learing-journey-app-deployment
+
+                            # STEP 4: commit + push
+                            git add service_ingress/domain_based_routing/Deployment.yaml
+                            git diff --quiet || git commit -m "update image to ${BUILD_NUMBER}"
+                            git push origin main
+                            """
+                        }
                     }
                 }
             }

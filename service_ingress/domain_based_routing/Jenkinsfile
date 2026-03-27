@@ -70,8 +70,11 @@ pipeline{
 
                             # 🔥 commit & push
                             git add service_ingress/domain_based_routing/Deployment.yaml
-                            git diff --quiet || git commit -m "update image to ${BUILD_NUMBER}"
-                           git push origin HEAD:main
+
+                            git commit -m "update image to ${BUILD_NUMBER}" || echo "No changes"
+
+                            git push origin HEAD:main
+                            
                            echo "===== AFTER SED ====="
                         cat service_ingress/domain_based_routing/Deployment.yaml
 

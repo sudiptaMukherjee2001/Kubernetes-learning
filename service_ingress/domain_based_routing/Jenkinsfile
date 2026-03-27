@@ -49,7 +49,21 @@ pipeline{
                 
             }
         }
-   
+        stage("auth to GitHub"){
+            steps{
+                dir("/var/lib/jenkins/workspace/k8-learing-jouney"){
+                    sshagent(['git-ssh']) {
+                        sh """
+                        mkdir -p ~/.ssh
+                        ssh-keyscan github.com >> ~/.ssh/known_hosts
+                        git checkout main
+                        git config user.name "jenkins"
+                        git config user.email "jenkins@local"
+                        """
+                    }
+                }
+            }
+        }
        stage("Update YAML & Deploy"){
             steps{
                 
@@ -71,11 +85,6 @@ pipeline{
             dir("/var/lib/jenkins/workspace/k8-learing-jouney"){
                 sshagent(['git-ssh']) {
                     sh """
-                    mkdir -p ~/.ssh
-                    ssh-keyscan github.com >> ~/.ssh/known_hosts
-                    git checkout main
-                    git config user.name "jenkins"
-                    git config user.email "jenkins@local"
                     git add service_ingress/domain_based_routing/Deployment.yaml
                     git commit -m "update image to ${BUILD_NUMBER}" || true
                     git push origin main

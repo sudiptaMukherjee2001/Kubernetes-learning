@@ -71,6 +71,7 @@ pipeline{
             dir("/var/lib/jenkins/workspace/k8-learing-jouney"){
                 sshagent(['git-ssh']) {
                     sh """
+                    git checkout main
                     git config user.name "jenkins"
                     git config user.email "jenkins@local"
                     git add service_ingress/domain_based_routing/Deployment.yaml

@@ -3,8 +3,9 @@ pipeline{
     stages{
          stage("Build  images"){
             steps{
-                echo "========Creating the images========"
-                sh "docker build -t sudipta4docker/domain-based-routing:${BUILD_NUMBER} ."
+               dir("service_ingress/domain_based_routing"){
+                    sh "docker build -t sudipta4docker/domain-based-routing:${BUILD_NUMBER} ."
+                }
             }
             post{
                 success{

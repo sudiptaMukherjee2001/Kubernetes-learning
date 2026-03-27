@@ -56,7 +56,7 @@ pipeline{
                             git reset --hard origin/main
 
                             # ensure correct branch
-                            git checkout main
+                          git checkout -B main origin/main
 
                             git config user.name "jenkins"
                             git config user.email "jenkins@local"
@@ -71,7 +71,7 @@ pipeline{
                             # 🔥 commit & push
                             git add service_ingress/domain_based_routing/Deployment.yaml
                             git diff --quiet || git commit -m "update image to ${BUILD_NUMBER}"
-                            git push origin main
+                           git push origin HEAD:main
                             """
                         }
                     }

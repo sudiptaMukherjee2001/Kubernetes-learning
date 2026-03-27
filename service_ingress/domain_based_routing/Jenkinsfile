@@ -1,6 +1,13 @@
 pipeline{
      agent any 
     stages{
+        stage("Debug Workspace"){
+            steps{
+                sh "pwd"
+                sh "ls -la"
+                sh "ls -la service_ingress/domain_based_routing"
+            }
+        }
          stage("Build  images"){
             steps{
                dir("service_ingress/domain_based_routing"){
@@ -42,6 +49,27 @@ pipeline{
                 
             }
         }
+   
+        // stage("Deploy to Kubernetes"){
+        //     steps{
+        //         echo "========Deploying to Kubernetes========"
+
+        //         sh """
+        //         kubectl set image deployment/k8-learing-journey-app-deployment \
+        //         my-kubernetes-learing-journey-portfolio-application-image=sudipta4docker/domain-based-routing:${BUILD_NUMBER}
+        //         """
+        //     }
+        // }
+      
+        // stage("Apply Deployment"){
+        //     steps{
+        //         echo "========Deploying to Kubernetes========"
+
+        //         sh """
+        //         kubectl apply -f 
+        //         """
+        //     }
+        // }
         
     }
    

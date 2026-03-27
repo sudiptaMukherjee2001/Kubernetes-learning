@@ -60,6 +60,7 @@ pipeline{
                         export KUBECONFIG=$kube_config
                         sed -i 's|image:.*|image: sudipta4docker/domain-based-routing:${BUILD_NUMBER}|' Deployment.yaml 
                         kubectl apply -f Deployment.yaml
+                        kubectl get pods
                         """
                     }
                 }

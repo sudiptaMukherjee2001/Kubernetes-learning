@@ -5,7 +5,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: "k8s-learning.sudiptaworks.in"
+  - host: "k8s-learning.clunex.in"
     http:
       paths:
       - path: /

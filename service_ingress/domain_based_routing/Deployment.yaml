@@ -5,7 +5,7 @@ metadata:
   labels:
     app: k8-learning-app
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: k8-learing-journey-app
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: my-kubernetes-learing-journey-portfolio-application-image
-        image: sudipta4docker/domain-based-routing:v2
+        image: sudipta4docker/domain-based-routing:v1.0   
         ports:
         - containerPort: 80
         resources:

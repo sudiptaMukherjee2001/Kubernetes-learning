@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: my-kubernetes-learing-journey-portfolio-application-image
-        image:  sudipta4docker/domain-based-routing:v2.0.2
+        image:  sudipta4docker/domain-based-routing:v3.0.1
         ports:
         - containerPort: 80
         resources:

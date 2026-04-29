@@ -1,23 +1,13 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: my-k8-learing-journey-ingress
-  annotations:
-    nginx.ingress.kubernetes.io/use-regex: "true"
+  name: frontend-ingress
 spec:
   ingressClassName: nginx
   rules:
   - host: k8s-learning.clunex.in
     http:
       paths:
-      - path: /api(/|$)(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: backend-service
-            port:
-              number: 80
-
       - path: /
         pathType: Prefix
         backend:

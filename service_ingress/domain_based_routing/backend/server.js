@@ -21,6 +21,23 @@ app.get("/api/recover", (req, res) => {
   res.send("Backend RECOVERED");
 });
 
+let isBlocked = false;
+
+app.get("/api/block", (req, res) => {
+  if (isBlocked) return res.send("Already blocking");
+
+  isBlocked = true;
+  console.log("Blocking started");
+
+  const start = Date.now();
+  while (Date.now() - start < 20000) {}
+
+  isBlocked = false;
+  console.log("Blocking ended");
+
+  res.send("Recovered");
+});
+
 app.get("/healthz", (req, res) => {
    if (isStressed) {
     return res.status(500).send("NOT OK"); // 👈 THIS triggers Route53 failover
@@ -28,7 +45,7 @@ app.get("/healthz", (req, res) => {
   res.status(200).send("OK");
 });
 
-app.get("/live", (req, res) => {
+app.get("/api/live", (req, res) => {
   res.status(200).send("ALIVE");
 });
 

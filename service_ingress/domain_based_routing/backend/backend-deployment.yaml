@@ -13,25 +13,26 @@ spec:
         app: backend
     spec:
       containers:
-      - name: backend
-        image: sudipta4docker/domain-based-routing-backend:v1.0.13
-        ports:
-        - containerPort: 80
+        - name: backend
+          image: sudipta4docker/domain-based-routing-backend:v1.0.15
+          ports:
+            - containerPort: 80
 
-        # ✅ Readiness Probe (traffic control)
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: 80
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          failureThreshold: 3
+          # ✅ Readiness Probe (traffic control)
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 3
 
-        # ✅ Liveness Probe (auto-restart)
-        livenessProbe:
-          httpGet:
-            path: /live
-            port: 80
-          initialDelaySeconds: 180
-          periodSeconds: 10
-          failureThreshold: 3
+          # ✅ Liveness Probe (restart if stuck)
+          livenessProbe:
+            httpGet:
+              path: /api/live
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3

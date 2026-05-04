@@ -1,220 +1,129 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>K8s DR Demo</title>
-    <style>
-        /* Modern CSS Variables for a Custom Feel */
-        :root {
-            --bg-color: #f1f5f9;
-            --card-bg: #ffffff;
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
-            --text-main: #0f172a;
-            --text-muted: #475569;
-            --error: #dc2626;
-            --success: #059669;
-            --border: #cbd5e1;
-        }
+  <title>Report System Demo-secondary</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #f5f5f5;
+      text-align: center;
+      padding: 40px;
+    }
 
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-        }
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      width: 400px;
+      margin: auto;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
 
-        .container {
-            width: 90%;
-            max-width: 480px;
-            padding: 48px;
-            background: var(--card-bg);
-            border-radius: 20px;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-            text-align: center;
-        }
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
 
-        .header {
-            margin-bottom: 40px;
-        }
+    .primary { background: #007bff; color: white; }
+    .danger { background: #dc3545; color: white; }
 
-        h2 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0;
-            color: var(--text-main);
-            letter-spacing: -0.02em;
-        }
+    select, input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 10px;
+    }
 
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            margin-top: 12px;
-        }
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
+    }
 
-        /* Form Controls */
-        #myForm {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 16px;
-            font-size: 1.1rem;
-            border: 2px solid var(--border);
-            border-radius: 12px;
-            box-sizing: border-box;
-            transition: border-color 0.2s, box-shadow 0.2s;
-            outline: none;
-        }
-
-        input[type="text"]:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-        }
-
-        button {
-            background-color: var(--primary);
-            color: white;
-            padding: 16px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        button:hover {
-            background-color: var(--primary-hover);
-            transform: translateY(-1px);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        button:disabled {
-            background-color: var(--border);
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Status Feedback Area */
-        #status {
-            margin-top: 32px;
-            min-height: 60px;
-            font-size: 1rem;
-            padding: 16px;
-            border-radius: 12px;
-            line-height: 1.4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-        }
-
-        .status-idle { opacity: 0; }
-
-        .status-loading {
-            background: #f8fafc;
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            animation: pulse 1.5s infinite ease-in-out;
-        }
-
-        .status-success {
-            background: #f0fdf4;
-            color: var(--success);
-            border: 1px solid #bbf7d0;
-            font-weight: 600;
-        }
-
-        .status-error {
-            background: #fef2f2;
-            color: var(--error);
-            border: 1px solid #fecaca;
-            font-weight: 600;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-    </style>
+    #responseTime {
+      font-size: 12px;
+      color: gray;
+    }
+  </style>
 </head>
 
 <body>
 
-    <div class="container">
-        <div class="header">
-            <h2>K8s DR Demo App-secondary</h2>
-            <p class="subtitle">Submit data to verify cluster availability.</p>
-        </div>
+  <div class="card">
+    <h2>Report Generator-secondary</h2>
 
-        <form id="myForm">
-            <input type="text" id="name" placeholder="Enter record name" required autocomplete="off" />
-            <button type="submit" id="submitBtn">Submit Data</button>
-        </form>
+    <!-- Report Type -->
+    <select id="reportType">
+      <option value="sales">Sales Report</option>
+      <option value="users">User Report</option>
+      <option value="orders">Orders Report</option>
+    </select>
 
-        <div id="status" class="status-idle"></div>
-    </div>
+    <!-- Report Size -->
+    <select id="reportSize">
+      <option value="small">Small (Fast)</option>
+      <option value="large">Large (Heavy)</option>
+    </select>
 
-    <script>
-        const form = document.getElementById("myForm");
-        const statusDiv = document.getElementById("status");
-        const submitBtn = document.getElementById("submitBtn");
-        const nameInput = document.getElementById("name");
+    <!-- Action -->
+    <button class="primary" onclick="generateReport()">
+      Generate Report
+    </button>
 
-        async function submitData(retry = false) {
-            const name = nameInput.value;
+    <!-- Status -->
+    <div id="status">Status: Idle</div>
+    <div id="responseTime"></div>
+  </div>
 
-            // UI Update: Disable button and show loading state
-            submitBtn.disabled = true;
-            statusDiv.className = "status-loading";
-            statusDiv.innerHTML = retry
-                ? "Connection lost. Re-attempting sync..."
-                : "Processing request...";
+<script>
+async function generateReport() {
+  const type = document.getElementById("reportType").value;
+  const size = document.getElementById("reportSize").value;
+  const statusEl = document.getElementById("status");
+  const timeEl = document.getElementById("responseTime");
 
-            try {
-                const res = await fetch("/api/submit", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name })
-                });
+  try {
+    statusEl.innerText = "Processing...";
+    timeEl.innerText = "";
 
-                if (!res.ok) throw new Error("Server Unreachable");
+    const start = Date.now();
 
-                const data = await res.text();
+    let res;
 
-                // On Success
-                statusDiv.className = "status-success";
-                statusDiv.innerHTML = `✅ Successfully recorded: ${data}`;
-                submitBtn.disabled = false;
+    if (size === "small") {
+      // Fast path (precomputed)
+      res = await fetch("/api/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ name: type })
+      });
+    } else {
+      // Heavy path (CPU block)
+      res = await fetch("/api/block");
+    }
 
-            } catch (err) {
-                // On Failure: Trigger the retry loop
-                statusDiv.className = "status-error";
-                statusDiv.innerHTML = "⚠️ Service unreachable. failover in progress...";
+    const end = Date.now();
+    const time = end - start;
 
-                // Delay 3 seconds then try again
-                setTimeout(() => submitData(true), 3000);
-            }
-        }
+    if (!res.ok) {
+      throw new Error("Service unavailable");
+    }
 
-        form.addEventListener("submit", function(e) {
-            e.preventDefault();
-            submitData();
-        });
-    </script>
+    const data = await res.text();
+
+    statusEl.innerText = data;
+    timeEl.innerText = "Response time: " + time + " ms";
+
+  } catch (err) {
+    statusEl.innerText = "Service temporarily unavailable";
+    timeEl.innerText = "Try again in a few seconds...";
+  }
+}
+</script>
 
 </body>
 </html>
